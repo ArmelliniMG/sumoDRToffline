@@ -1,0 +1,2 @@
+name	depart	orig	dest	pax	pax_wc	orig_pos	dst_pos	orig_window	dest_window	drf
+req0	70	gneE9	gneE124	1	0	20	20	70,1000	900,2500	10

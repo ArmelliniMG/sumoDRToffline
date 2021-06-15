@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 10.02.2020 16:03:18 by Eclipse SUMO netedit Version v1_4_0+0952-47d9c9de44
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/netconvertConfiguration.xsd">
+
+    <output>
+        <output-file value="C:\Users\arme_ma\Documents\Giuliana\Projekte\DRT_Algorithmus\Desarrollo\Input\Desarrollo.net.xml"/>
+    </output>
+
+    <processing>
+        <offset.disable-normalization value="true"/>
+    </processing>
+
+    <junctions>
+        <no-turnarounds value="true"/>
+    </junctions>
+
+    <netedit>
+        <additional-files value="C:\Users\arme_ma\Documents\Giuliana\Projekte\DRT_Algorithmus\Desarrollo\Input\Desarrollo.add.xml"/>
+        <route-files value="C:\Users\arme_ma\Documents\Giuliana\Projekte\DRT_Algorithmus\Desarrollo\Input\Desarrollo.rou.xml"/>
+    </netedit>
+
+    <report>
+        <aggregate-warnings value="5"/>
+    </report>
+
+</configuration>
+-->
+
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
+    <vType id="BRT" vClass="bus"/>
+    <route color="yellow" id="route_w" edges="gneE0 gneE27 gneE28 gneE82 gneE83 gneE84 gneE44 gneE45 gneE104 gneE105 gneE106 gneE64 -gneE15 -gneE14 gneE109 -gneE127 gneE128 gneE129 gneE148 gneE135 gneE136 gneE159 gneE160 -gneE119">
+        <stop busStop="SA1_w2" duration="15.00" until="30"/> 
+        <stop busStop="SA1_w1" duration="15.00" until="60"/> 
+        <stop busStop="SA1_w" duration="15.00" until="90"/> 
+        <stop busStop="SA2_w" duration="15.00" until="120"/> 
+        <stop busStop="SA2_w1" duration="15.00" until="150"/> 
+        <stop busStop="SA2_w2" duration="15.00" until="180"/> 
+    </route>    
+    <route color="yellow" id="route_e" edges="gneE119 -gneE160 -gneE159 -gneE136 -gneE135 -gneE148 -gneE129 -gneE128 gneE127 -gneE109 gneE14 gneE15 -gneE64 -gneE106 -gneE105 -gneE104 -gneE45 -gneE44 -gneE84 -gneE83 -gneE82 -gneE28 -gneE27 -gneE0">
+        <stop busStop="SA2_e2" duration="15.00" until="30"/> 
+        <stop busStop="SA2_e1" duration="15.00" until="60"/> 
+        <stop busStop="SA2_e" duration="15.00" until="90"/> 
+        <stop busStop="SA1_e" duration="15.00" until="120"/> 
+        <stop busStop="SA1_e1" duration="15.00" until="150"/> 
+        <stop busStop="SA1_e2" duration="15.00" until="180"/> 
+    </route>
+    <flow id="BRT_w" type="BRT" route="route_w" begin="0.0" end="1000.0" period="100" line="BRT_w"/>
+    <flow id="BRT_e" type="BRT" route="route_e" begin="50.0" end="1000.0" period="100" line="BRT_e"/>
+</routes>

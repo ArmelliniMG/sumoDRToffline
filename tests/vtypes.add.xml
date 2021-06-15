@@ -1,0 +1,63 @@
+<routes>    
+    
+    <vType vClass="bus" id="bus" length="10.00" maxSpeed="23" color=".4,.8,.3" emissionClass="HBEFA3/Bus">
+        <param key="has.emissions.device" value="true"/>
+    </vType>
+    
+    <vType vClass="bus" id="brt" maxSpeed="28" color=".4,.8,.3" guiShape="bus/flexible" length="18" emissionClass="Energy/unknown">
+        <param key="has.emissions.device" value="true"/>
+        <param key="has.battery.device" value="true"/>
+        <param key="maximumBatteryCapacity" value="2000"/>
+        <param key="maximumPower" value="1000"/>
+        <param key="vehicleMass" value="10000"/>
+        <param key="frontSurfaceArea" value="5"/>
+        <param key="airDragCoefficient" value="0.6"/>
+        <param key="internalMomentOfInertia" value="0.01"/>
+        <param key="radialDragCoefficient" value="0.5"/>
+        <param key="rollDragCoefficient" value="0.01"/>
+        <param key="constantPowerIntake" value="100"/>
+        <param key="propulsionEfficiency" value="0.9"/>
+        <param key="recuperationEfficiency" value="0.9"/>
+        <param key="stoppingTreshold" value="0.1"/> 
+    </vType>
+    
+    <vType vClass="bus" id="Shuttle" guiShape="passenger/van">
+    </vType>
+    
+    <vType vClass="taxi" id="BusA" guiShape="passenger" personCapacity="6" color="1,0,0" emissionClass="Energy/unknown">
+          <param key="has.emissions.device" value="true"/>
+          <param key="has.battery.device" value="true"/>
+    </vType>
+    <vType vClass="taxi" id="BusB" guiShape="passenger" personCapacity="6" color="0,1,0" emissionClass="Energy/unknown">
+          <param key="has.emissions.device" value="true"/>
+          <param key="has.battery.device" value="true"/>
+    </vType>
+    <vType vClass="taxi" id="BusC" guiShape="passenger/van" personCapacity="12" color="1,1,0" emissionClass="Energy/unknown">
+          <param key="has.emissions.device" value="true"/>
+          <param key="has.battery.device" value="true"/>
+    </vType>
+    
+    <vType id="bike" vClass="bicycle"/>
+    
+    <vTypeDistribution id="pkw">
+          <vType vClass="passenger" id="pkwFern1"  color=".7,.4,.4" minGap="1.5" accel="2.6" decel="4.5" sigma="0.5" length="4.5" maxSpeed="70" probability=".4" guiShape="passenger/sedan"/>
+          <vType vClass="passenger" id="pkwFern2a" color=".7,.4,.5" minGap="1.5" accel="3.0" decel="4.5" sigma="0.5" length="4.5" maxSpeed="70" probability=".2" guiShape="passenger/hatchback"/>
+          <vType vClass="passenger" id="pkwFern2b" color=".7,.4,.6" minGap="1.0" accel="2.8" decel="4.5" sigma="0.5" length="4.0" maxSpeed="70" probability=".2" guiShape="passenger/hatchback"/>
+          <vType vClass="passenger" id="pkwFern3"  color=".7,.5,.5" minGap="1.5" accel="2.7" decel="4.5" sigma="0.5" length="4.5" maxSpeed="70" probability=".2" guiShape="passenger/wagon"/>
+          <vType vClass="passenger" id="pkwFern4"  color=".7,.5,.6" minGap="1.5" accel="2.4" decel="4.5" sigma="0.5" length="6.0" maxSpeed="70" probability=".1" guiShape="passenger/van"/>
+          <vType vClass="passenger" id="pkwFern5"  color=".7,.5,.7" minGap="1.5" accel="2.3" decel="4.5" sigma="0.5" length="6.0" maxSpeed="50" probability=".05" guiShape="delivery"/>
+    </vTypeDistribution>
+
+    <vTypeDistribution id="lkw">
+          <vType vClass="truck" id="lkw1"  color=".3,.4,.6" minGap="1.5" accel="1.5" decel="4.5" sigma="0.5" length="16.5" maxSpeed="23" probability=".3" guiShape="truck/semitrailer"/>
+          <vType vClass="truck" id="lkw3"  color=".3,.4,.5" minGap="1.5" accel="1.5" decel="4.5" sigma="0.5" length="16" maxSpeed="23" probability=".3" guiShape="truck/trailer"/>
+          <vType vClass="truck" id="lkw4"  color=".3,.4,.7" minGap="1.5" accel="2" decel="4.5" sigma="0.5" length="8" maxSpeed="25" probability=".35" guiShape="truck"/>
+          <vType vClass="truck" id="busLKW"   color=".3,.3,.4" minGap="1.5" accel="2." decel="4.5" sigma="0.5" length="12" maxSpeed="35" probability=".05" guiShape="bus/coach" />
+    </vTypeDistribution>
+          
+    <vType id="DEFAULT_VEHTYPE" length="5.00" minGap="2.50" maxSpeed="70.00" color=".7,.6,.6" emissionClass="HBEFA3/PC_D_EU4">
+          <param key="has.emissions.device" value="true"/>
+    </vType>
+    
+    <vType id="default" length="5.00" minGap="2.50" maxSpeed="70.00" color=".7,.6,.6"/>
+</routes>

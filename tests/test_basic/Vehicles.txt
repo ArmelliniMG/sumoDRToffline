@@ -1,0 +1,2 @@
+ID	cost	max_capacity	max_wc	depot_edge	depot_pos	service_area	vType	start	end
+DRTA	10	6	0	gneE69	50		BusA		

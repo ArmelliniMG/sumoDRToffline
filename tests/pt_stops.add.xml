@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 10.02.2020 16:01:46 by Eclipse SUMO netedit Version v1_4_0+0952-47d9c9de44
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/netconvertConfiguration.xsd">
+
+    <output>
+        <output-file value="C:\Users\arme_ma\Documents\Giuliana\Projekte\DRT_Algorithmus\Desarrollo\Input\Desarrollo.net.xml"/>
+    </output>
+
+    <processing>
+        <offset.disable-normalization value="true"/>
+    </processing>
+
+    <junctions>
+        <no-turnarounds value="true"/>
+    </junctions>
+
+    <netedit>
+        <additional-files value="C:\Users\arme_ma\Documents\Giuliana\Projekte\DRT_Algorithmus\Desarrollo\Input\Desarrollo.add.xml"/>
+    </netedit>
+
+    <report>
+        <aggregate-warnings value="5"/>
+    </report>
+
+</configuration>
+-->
+
+<additional xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/additional_file.xsd">
+    <busStop id="SA1_e" lane="gneE14_1" startPos="20.00" endPos="40.00" lines="BRT"/>
+    <busStop id="SA1_w" lane="-gneE14_1" startPos="20.00" endPos="40.00" lines="BRT"/>
+    
+    <busStop id="SA1_e1" lane="-gneE45_1" startPos="20.00" endPos="40.00" lines="BRT"/>
+    <busStop id="SA1_w1" lane="gneE45_1" startPos="20.00" endPos="40.00" lines="BRT"/>
+    
+    <busStop id="SA1_e2" lane="-gneE27_1" startPos="20.00" endPos="40.00" lines="BRT"/>
+    <busStop id="SA1_w2" lane="gneE27_1" startPos="20.00" endPos="40.00" lines="BRT"/>
+    
+    <busStop id="SA2_e" lane="gneE127_1" startPos="20.00" endPos="40.00" lines="BRT"/>
+    <busStop id="SA2_w" lane="-gneE127_1" startPos="20.00" endPos="40.00" lines="BRT"/>
+    
+    <busStop id="SA2_e1" lane="-gneE148_1" startPos="20.00" endPos="40.00" lines="BRT"/>
+    <busStop id="SA2_w1" lane="gneE148_1" startPos="20.00" endPos="40.00" lines="BRT"/>
+    
+    <busStop id="SA2_e2" lane="-gneE160_1" startPos="20.00" endPos="40.00" lines="BRT"/>
+    <busStop id="SA2_w2" lane="gneE160_1" startPos="20.00" endPos="40.00" lines="BRT"/>
+    
+</additional>

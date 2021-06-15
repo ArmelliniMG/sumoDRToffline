@@ -1,0 +1,1 @@
+py ../../drtOffline.py -n ../test.net.xml -d ../vtypes.add.xml,../pt_stops.add.xml,../pt_lines.rou.xml -r Requests.txt -v Vehicles.txt -s ../PT_Stops.txt --stop_length 15 --DRT test_pt_feeder_firstlast -a ../SA_edges.txt
