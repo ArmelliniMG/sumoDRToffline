@@ -586,10 +586,15 @@ def run_LP(options, vehicles, requests, RTV_graph, memory_problems, RV_dic,
         while (served_num + fix_rejected) < len(requests):
             # add one vehicle and solve the ILP until all request are served
             i = i + 1
-            vehicles.append(Vehicle("%s%s" % (v_base.ID, i), v_base.cost,
-                                    v_base.cap, v_base.cap_wc, v_base.depot,
-                                    v_base.depot_pos, v_base.area, v_base.type,
-                                    v_base.start_time, v_base.end_time))
+            vehicle_dict = {"id": "%s%s" % (v_base.ID, i), "type": v_base.type,
+                            "cost": v_base.cost, "max_capacity": v_base.cap,
+                            "max_wc": v_base.cap_wc,
+                            "depot_edge": v_base.depot,
+                            "depot_pos": v_base.depot_pos,
+                            "service_area": v_base.area,
+                            "start_time": v_base.start_time,
+                            "end_time": v_base.end_time}
+            vehicles.append(Vehicle(vehicle_dict))
             for j in range(i):
                 # to update all values the index must be the first of the
                 # updated values

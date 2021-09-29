@@ -30,48 +30,23 @@ if 'SUMO_HOME' in os.environ:
     sys.path.append(tools)
 else:
     sys.exit("please declare environment variable 'SUMO_HOME'")
+from sumolib.xml import parse_fast, parse_fast_nested  # noqa
 
 
 class Request:
-    def __init__(self, ID, name, depart, orig, dst, pax, pax_wc, orig_pos,
-                 dst_pos, orig_window, dst_window, drf):
-        self.ID = ID  # request ID
-        self.name = name  # request ID
-        self.depart = depart  # desired depart time
-        self.orig_edge = orig  # origin edge
-        self.dest_edge = dst  # destination edge
-        try:
-            self.orig_pos = float(orig_pos)  # origin position
-        except ValueError:
-            self.orig_pos = 5
-        try:
-            self.dest_pos = float(dst_pos)  # destination position
-        except ValueError:
-            self.dest_pos = 5
-        try:
-            # origin time window
-            self.orig_window = [int(orig_window.split(",")[0]),
-                                int(orig_window.split(",")[1])]
-        except ValueError:
-            self.orig_window = None
-        try:
-            # destination time window
-            self.dest_window = [int(dst_window.split(",")[0]),
-                                int(dst_window.split(",")[1])]
-        except ValueError:
-            self.dest_window = None
-        try:
-            self.drf = float(drf)  # direct route factor
-        except ValueError:
-            self.drf = 2
-        try:
-            self.pax = int(pax)  # number of passengers
-        except ValueError:
-            self.pax = 1
-        try:
-            self.pax_wc = int(pax_wc)  # number of wheelchair passengers
-        except ValueError:
-            self.pax_wc = 0
+    def __init__(self, req_data):
+        self.ID = req_data.get('id')
+        self.name = req_data.get('name')
+        self.depart = req_data.get('depart')
+        self.orig_edge = req_data.get('from')
+        self.dest_edge = req_data.get('to')
+        self.orig_pos = req_data.get('departPos', 5)
+        self.dest_pos = req_data.get('arrivalPos', 5)
+        self.orig_window = req_data.get('pickup_window', None)
+        self.dest_window = req_data.get('dropoff_window', None)
+        self.drf = req_data.get('drf', 2)
+        self.pax = int(req_data.get('passenger', 1))
+        self.pax_wc = int(req_data.get('passenger_wc', 0))
 
         # value assigned later
         self.rejected = None  # if request must be rejected
@@ -99,30 +74,17 @@ class Request:
 
 
 class Vehicle:
-    def __init__(self, ID, cost, cap, wc, depot, depot_pos, area, sumo_type,
-                 start_time, end_time):
-        self.ID = ID  # name of the vehicle
-        self.cost = cost  # cost of using this vehicle
-        self.cap = cap  # maximal passenger capacity
-        self.cap_wc = wc  # maximal wheelchair passenger capacity
-        self.depot = depot  # depot edge
-        self.depot_pos = depot_pos  # depot position on edge
-        if area:  # service area
-            self.area = area
-        else:
-            self.area = None
-        if sumo_type:  # sumo vehicle class
-            self.type = sumo_type
-        else:
-            self.type = "taxi"
-        if start_time:  # earliest depart
-            self.start_time = int(start_time)
-        else:
-            self.start_time = 0
-        if end_time:  # latest arrival
-            self.end_time = int(end_time)
-        else:
-            self.end_time = 86400
+    def __init__(self, veh_data):
+        self.ID = veh_data.get('id')
+        self.type = veh_data.get('type')
+        self.cost = veh_data.get('cost', 0)
+        self.cap = veh_data.get('max_capacity', 4)
+        self.cap_wc = veh_data.get('max_wc', 0)
+        self.depot = veh_data.get('depot_edge')
+        self.depot_pos = veh_data.get('depot_pos', 0)
+        self.area = veh_data.get('service_area', None)
+        self.start_time = veh_data.get('start_time', 0)
+        self.end_time = veh_data.get('end_time', 86400)
 
         # value assigned later
         self.trip = None  # assigned trip
@@ -149,6 +111,7 @@ def initOptions():
                     help="File with drt vehicles")
     ap.add_argument("-a", "--service-area", metavar="FILE",
                     help="File with edges for each service area")
+    ap.add_argument("--taz-area", action='store_true')
     ap.add_argument("-s", "--pt-stops", metavar="FILE",
                     help="File with public transport stops")
     ap.add_argument("--drf-min", type=int, default=600,
@@ -200,53 +163,60 @@ def initOptions():
     return ap
 
 
-def get_delimiter(file_line):
-    if ";" in file_line:
-        delimiter = ";"
-    elif "\t" in file_line:
-        delimiter = "\t"
-    else:
-        print("Please use comma or tab delimited format for input file")
-        sys.exit()
-
-    return delimiter
-
-
 def read_requests(options):
+    requests = []
+    request_dict = {}
+    parsing_person = None
+    person_idx = 0
     # reads requests, creates class instance and returns requests list
-    with open(options.reservations, "r") as requests_file:
-        requests_lines = requests_file.read().splitlines()
-        delimiter = get_delimiter(requests_lines[0])
+    for person, param in parse_fast_nested(options.reservations,
+                                           "person", ("id", "depart",
+                                                      "from", "to"),
+                                           "param", ("key", "value")):
+        if parsing_person != person.id:
+            if parsing_person is not None:
+                requests.append(Request(request_dict))
+                person_idx += 1
+            request_dict = {}
+            parsing_person = person.id
+            request_dict['id'] = person_idx
+            request_dict['name'] = person.id
+            request_dict['depart'] = float(person.depart)
+            request_dict['from'] = person.attr_from
+            request_dict['to'] = person.to
+        if param.key in ('pickup_window', 'dropoff_window'):
+            t_window = param.value.split(",")
+            request_dict[param.key] = float(t_window[0]), float(t_window[1])
+        else:
+            request_dict[param.key] = float(param.value)
 
-        requests = [request.split(delimiter) for request in requests_lines[1:]]
+    requests.append(Request(request_dict))  # append last request
 
-    # creates Request Class
-    requests = [Request(int(index),  # ID
-                        str(request[0]), int(request[1]),  # name, depart
-                        str(request[2]), str(request[3]),  # orig, dest
-                        int(request[4]), int(request[5]),  # pax, pax_wc
-                        str(request[6]), str(request[7]),  # orig_pos, dest_pos
-                        str(request[8]), str(request[9]),  # orig, dest_window
-                        str(request[10])  # drf
-                        ) for index, request in enumerate(requests)]
     return requests
 
 
 def read_vehicles(options):
-    # reads vehicles, creates class instances and returns vehicles list
-    with open(options.taxis, "r") as vehicles_file:
-        vehicles_lines = vehicles_file.read().splitlines()
-        delimiter = get_delimiter(vehicles_lines[0])
+    vehicles = []
+    vehicle_dict = {}
+    parsing_vehicle = None
+    # reads requests, creates class instance and returns requests list
+    for vehicle, param in parse_fast_nested(options.taxis,
+                                            "vehicle", ("id", "type"),
+                                            "param", ("key", "value")):
+        if parsing_vehicle != vehicle.id:
+            if parsing_vehicle is not None:
+                vehicles.append(Vehicle(vehicle_dict))
+            vehicle_dict = {}
+            parsing_vehicle = vehicle.id
+            vehicle_dict['id'] = vehicle.id
+            vehicle_dict['type'] = vehicle.type
+        if param.key in ('depot_edge', 'service_area'):
+            vehicle_dict[param.key] = param.value
+        else:
+            vehicle_dict[param.key] = float(param.value)
 
-        vehicles = [vehicle.split(delimiter) for vehicle in vehicles_lines[1:]]
+    vehicles.append(Vehicle(vehicle_dict))  # append last request
 
-    # creates Request Class
-    vehicles = [Vehicle(str(vehicle[0]), int(vehicle[1]),  # ID, cost
-                        int(vehicle[2]), int(vehicle[3]),  # cap, wc
-                        str(vehicle[4]), float(vehicle[5]),  # depot, depot_pos
-                        str(vehicle[6]), str(vehicle[7]),  # area, sumo_type
-                        vehicle[8], vehicle[9]  # start_time, end_time
-                        ) for vehicle in vehicles]
     return vehicles
 
 
@@ -323,17 +293,26 @@ def main():
     requests = read_requests(options)
     vehicles = read_vehicles(options)
 
-    try:
-        with open(options.service_area, "r") as service_area_file:
-            service_area_lines = service_area_file.read().splitlines()
-            delimiter = get_delimiter(service_area_lines[0])
-            service_areas = []
-            service_areas_element = namedtuple('Area', ['name', 'edges'])
-
-            for area in service_area_lines[1:]:
-                service_areas.append(service_areas_element(area.split(delimiter)[0], area.split(delimiter)[1:]))  # noqa
-    except TypeError:
-        service_areas = None
+    service_areas = None
+    if options.service_area:
+        service_areas = []
+        service_area = namedtuple('Area', ['name', 'edges'])
+        if options.taz_area:
+            parsing_area = None
+            for area, edge in parse_fast(options.service_area,
+                                         "taz", "id", "tazSource", "id"):
+                if parsing_area != area.id:
+                    area_edges = []
+                    if parsing_area is not None:
+                        service_areas.append(service_area(parsing_area,
+                                                          area_edges))
+                    parsing_area = area.id
+                area_edges.append(edge)
+        else:
+            for area in parse_fast(options.service_area,
+                                "service_area", ("id", "edges")):
+                service_areas.append(service_area(area.id,
+                                                  area.edges.split(',')))
 
     try:
         with open(options.pt_stops, "r") as pt_stops_file:
